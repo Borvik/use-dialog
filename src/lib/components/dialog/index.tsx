@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect, useMemo, useContext } from 'react';
 import ReactDOM from 'react-dom';
 import { DialogProvider, DialogContext } from './provider';
-import dialogPolyfill from 'dialog-polyfill';
 import { firstFocusable } from '../../utils/firstFocusable';
 
 const modalRoot = (typeof document !== 'undefined')
@@ -51,7 +50,13 @@ export const Dialog: React.FC<DialogProps> = ({ className, style, onSubmit, chil
   const dialogCreated = (el: HTMLDialogElement | null) => {
     if (!el || el.open || !dialogEl) return;
 
-    dialogPolyfill.registerDialog(el);
+    try {
+      const dialogPolyfill = require('dialog-polyfill').default;
+      dialogPolyfill.registerDialog(el);
+    } catch (err) {
+      console.error('HTML5 dialog-polyfill failed to register - dialogs may not work');
+      console.error(err);
+    }
 
     dialogEl.current?.removeEventListener('close', dialogClose);
     dialogEl.current?.removeEventListener('click', backdropClick);
