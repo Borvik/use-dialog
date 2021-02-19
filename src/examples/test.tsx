@@ -15,7 +15,7 @@ export const EditDialog: React.FC<{data?: FormState}> = (props) => {
     last_name: '',
   });
 
-  return <Dialog dialogRef={dialogEl} onSubmit={async (close) => {
+  return <Dialog doNotUseHTML5Dialog dialogRef={dialogEl} onSubmit={async (close) => {
     await new Promise(resolve => setTimeout(resolve, 1500));
     if (form.first_name === 'fail')
       throw new Error('test');

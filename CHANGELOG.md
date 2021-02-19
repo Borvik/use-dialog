@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+## [1.1.0] - 2021-02-19
+- Add option prevent the usage of the HTML5 dialog and force the usage of the polyfill
+
 ## [1.0.2] - 2021-02-17
 - Added context to export
 

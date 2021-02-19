@@ -1,4 +1,4 @@
-@import 'dialog-polyfill/dist/dialog-polyfill';
+@import '~@borvik/dialog-polyfill/dist/dialog-polyfill';
 
 .dialog-container {
   position: absolute;
@@ -9,12 +9,12 @@
   justify-content: center;
   align-items: center;
 
-  dialog {
+  dialog, .dialog {
     position: relative;
   }
 }
 
-dialog {
+dialog, .dialog {
   border: none;
   top: 0; bottom: 0;
   padding: 0;

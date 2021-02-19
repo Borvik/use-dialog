@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { DialogProvider, DialogContext } from './provider';
 import { firstFocusable } from '../../utils/firstFocusable';
 
+type DialogElement = HTMLDialogElement | HTMLDivElement;
 const modalRoot = (typeof document !== 'undefined')
   ? document.getElementsByTagName('body').item(0)
   : null;
@@ -12,13 +13,14 @@ interface DialogProps {
   dialogRef?: React.MutableRefObject<HTMLDialogElement | null>;
   style?: React.CSSProperties;
   className?: string;
+  doNotUseHTML5Dialog?: boolean
 }
 
 /**
  * Need options:
  * Click-outside to close: boolean
  */
-export const Dialog: React.FC<DialogProps> = ({ className, style, onSubmit, children, dialogRef }) => {
+export const Dialog: React.FC<DialogProps> = ({ doNotUseHTML5Dialog, className, style, onSubmit, children, dialogRef }) => {
   const [submitting, setSubmitting] = useState(false);
   const { close, dialog: dialogEl } = useContext(DialogContext);
   
@@ -47,11 +49,11 @@ export const Dialog: React.FC<DialogProps> = ({ className, style, onSubmit, chil
     }
   }, [ dialogEl ]);
 
-  const dialogCreated = (el: HTMLDialogElement | null) => {
-    if (!el || el.open || !dialogEl) return;
-
+  const dialogCreated = (el: DialogElement | null) => {
+    if (!el || (el as HTMLDialogElement).open || !dialogEl) return;
+    
     try {
-      const dialogPolyfill = require('dialog-polyfill').default;
+      const dialogPolyfill = require('@borvik/dialog-polyfill').default;
       dialogPolyfill.registerDialog(el);
     } catch (err) {
       console.error('HTML5 dialog-polyfill failed to register - dialogs may not work');
@@ -60,9 +62,9 @@ export const Dialog: React.FC<DialogProps> = ({ className, style, onSubmit, chil
 
     dialogEl.current?.removeEventListener('close', dialogClose);
     dialogEl.current?.removeEventListener('click', backdropClick);
-    dialogEl.current = el;
+    dialogEl.current = el as HTMLDialogElement;
     if (dialogRef) {
-      dialogRef.current = el;
+      dialogRef.current = el as HTMLDialogElement;
     }
     dialogEl.current.addEventListener('close', dialogClose);
     dialogEl.current.addEventListener('click', backdropClick);
@@ -89,8 +91,13 @@ export const Dialog: React.FC<DialogProps> = ({ className, style, onSubmit, chil
   if (!modalRoot)
     return null;
 
+  const DialogTag =  doNotUseHTML5Dialog ? 'div' : 'dialog';
+  let classes: string[] = [];
+  if (className?.length) classes.push(className);
+  if (doNotUseHTML5Dialog) classes.push('dialog');
+
   return ReactDOM.createPortal(<div className='dialog-container'>
-    <dialog style={style} className={`${className ?? ''} ${!!onSubmit ? 'dialog-form' : ''} ${submitting ? 'submitting' : ''}`.trim()} ref={dialogCreated}>
+    <DialogTag style={style} className={`${classes.join(' ')} ${!!onSubmit ? 'dialog-form' : ''} ${submitting ? 'submitting' : ''}`.trim()} ref={dialogCreated}>
       {!!onSubmit && <form onSubmit={(e) => {
         e.preventDefault();
         setSubmitting(true);
@@ -111,7 +118,7 @@ export const Dialog: React.FC<DialogProps> = ({ className, style, onSubmit, chil
       {!onSubmit && <>
         {children}
       </>}
-    </dialog>
+    </DialogTag>
   </div>, modalRoot);  
 };
 

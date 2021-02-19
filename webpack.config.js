@@ -19,13 +19,7 @@ module.exports = {
   },
   externals: [nodeExternals({
     whitelist: [
-      /^\@fortawesome/,
-      /^lodash/,
-      'clean-deep',
-      'dialog-polyfill',
-      'react-sortable-hoc',
-      'immutability-helper',
-      'qs',
+      '@borvik/dialog-polyfill',
     ]
   })],
   target: 'node',
