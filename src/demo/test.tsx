@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
-import { Dialog, DialogHeader, DialogFooter, DialogBody } from '../lib';
-import { useFormState } from '../lib/utils/usePartialState';
+import { Dialog, DialogHeader, DialogFooter, DialogBody } from '../library';
+import { useFormState } from '../library/utils/usePartialState';
 // import { firstFocusable } from '../../utils/firstFocusable';
 
 interface FormState {

@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { useDialog } from '../lib';
+import { useDialog } from '../library';
 import { EditDialog } from './test';
 
-import './App.css';
+import './style.scss';
 
 const addBodyClass = (className: string) => document.body.classList.add(className);
 const removeBodyClass = (className: string) => document.body.classList.remove(className);

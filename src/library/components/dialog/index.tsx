@@ -20,7 +20,7 @@ interface DialogProps {
  * Need options:
  * Click-outside to close: boolean
  */
-export const Dialog: React.FC<DialogProps> = ({ doNotUseHTML5Dialog, className, style, onSubmit, children, dialogRef }) => {
+export const Dialog: React.FC<DialogProps> = function Dialog({ doNotUseHTML5Dialog, className, style, onSubmit, children, dialogRef }) {
   const [submitting, setSubmitting] = useState(false);
   const { close, dialog: dialogEl } = useContext(DialogContext);
   
@@ -127,7 +127,7 @@ interface HeaderProps {
   className?: string
 }
 
-export const DialogHeader: React.FC<HeaderProps> = ({ className, showClose = true, children }) => {
+export const DialogHeader: React.FC<HeaderProps> = function DialogHeader({ className, showClose = true, children }) {
   const { dialog: dialogEl } = useContext(DialogContext);
   return <div className={`dialog-header ${className ?? ''}`.trim()}>
     <div>
@@ -145,7 +145,7 @@ interface BodyProps {
   className?: string
 }
 
-export const DialogBody: React.FC<BodyProps> = ({ className, children }) => {
+export const DialogBody: React.FC<BodyProps> = function DialogBody({ className, children }) {
   return <div className={`dialog-body ${className ?? ''}`.trim()}>
     {children}
   </div>
@@ -155,7 +155,7 @@ interface FooterProps {
   className?: string
 }
 
-export const DialogFooter: React.FC<FooterProps> = ({ className, children }) => {
+export const DialogFooter: React.FC<FooterProps> = function DialogFooter({ className, children }) {
   return <div className={`dialog-footer ${className ?? ''}`.trim()}>
     {children}
   </div>
