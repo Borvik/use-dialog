@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+## [1.1.2] - 2021-03-06
+- Removed sourcemaps from build
+
 ## [1.1.1] - 2021-03-01
 - Refactored to _not_ be based on `create-react-app`. Still relies on webpack dev server for testing and demo app. Change made to preserve component names in build, so they show nicely in the react debug tree for the containing app. _Should_ be fully backward compatible.
 

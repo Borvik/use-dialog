@@ -32,7 +32,6 @@ code {
 .dark {
   --text-color: white;
   --app-bg: #282c34;
-  --dt-fixed-bg: #282c34;
 
   button {
     color: var(--text-color);
@@ -78,7 +77,6 @@ code {
 .light {
   --text-color: #282c34;
   --app-bg: white;
-  --dt-fixed-bg: white;
 }
 
 .App {
