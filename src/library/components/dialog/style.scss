@@ -1,4 +1,4 @@
-@import '~@borvik/dialog-polyfill/dist/dialog-polyfill';
+@use '@borvik/dialog-polyfill/dist/dialog-polyfill';
 
 .dialog-container {
   position: absolute;
