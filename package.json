@@ -20,7 +20,7 @@
     "@types/react-router-dom": "^5.1.7",
     "babel-loader": "^8.2.2",
     "copyfiles": "^2.4.1",
-    "css-loader": "^5.0.2",
+    "css-loader": "^6.6.0",
     "fork-ts-checker-webpack-plugin": "^6.1.0",
     "html-webpack-plugin": "^5.2.0",
     "mkdirp": "^1.0.4",
@@ -38,7 +38,7 @@
     "typescript": "~3.8.3",
     "webpack": "^5.52.1",
     "webpack-cli": "^4.8.0",
-    "webpack-dev-server": "^4.2.1"
+    "webpack-dev-server": "^4.7.4"
   },
   "peerDependencies": {
     "react": "^16.13.1",
