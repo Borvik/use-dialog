@@ -100,7 +100,9 @@ export const Dialog: React.FC<DialogProps> = function Dialog({ doNotUseHTML5Dial
     <DialogTag style={style} className={`${classes.join(' ')} ${!!onSubmit ? 'dialog-form' : ''} ${submitting ? 'submitting' : ''}`.trim()} ref={dialogCreated}>
       {!!onSubmit && <form onSubmit={(e) => {
         e.preventDefault();
+        e.stopPropagation();
         setSubmitting(true);
+        let errored = false;
         onSubmit((result?: any) => {
           if (result !== null && typeof result !== 'undefined') {
             dialogEl?.current!.close(JSON.stringify(result));
@@ -108,9 +110,10 @@ export const Dialog: React.FC<DialogProps> = function Dialog({ doNotUseHTML5Dial
           }
           dialogEl?.current!.close();
         })
-        .catch(() => {}) // empty catch to catch form errors
+        .catch(() => { errored = true }) // empty catch to catch form errors
         .finally(() => {
-          setSubmitting(false);
+          if (errored)
+            setSubmitting(false);
         }); // setSubmitting...
       }}>
         {children}
