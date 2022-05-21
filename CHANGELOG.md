@@ -1,5 +1,11 @@
 ## [Unreleased]
 
+## [1.1.3] - 2022-05-21
+### Fixed
+- Dependabot alerts
+- Fixed issue where a missing `stopPropagation` caused secondary forms to submit, not just the one in the dialog.
+- Fixed an issue where a setState was getting called on an unmounted component.
+
 ## [1.1.2] - 2021-03-06
 - Removed sourcemaps from build
 
