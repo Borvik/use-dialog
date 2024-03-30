@@ -8,7 +8,7 @@ const modalRoot = (typeof document !== 'undefined')
   ? document.getElementsByTagName('body').item(0)
   : null;
 
-interface DialogProps {
+export interface DialogProps {
   onSubmit?: (close: (result?: any) => void) => Promise<void>;
   dialogRef?: React.MutableRefObject<HTMLDialogElement | null>;
   style?: React.CSSProperties;
@@ -125,12 +125,12 @@ export const Dialog: React.FC<DialogProps> = function Dialog({ doNotUseHTML5Dial
   </div>, modalRoot);  
 };
 
-interface HeaderProps {
+export interface DialogHeaderProps {
   showClose?: boolean;
   className?: string
 }
 
-export const DialogHeader: React.FC<HeaderProps> = function DialogHeader({ className, showClose = true, children }) {
+export const DialogHeader: React.FC<DialogHeaderProps> = function DialogHeader({ className, showClose = true, children }) {
   const { dialog: dialogEl } = useContext(DialogContext);
   return <div className={`dialog-header ${className ?? ''}`.trim()}>
     <div>
@@ -144,11 +144,11 @@ export const DialogHeader: React.FC<HeaderProps> = function DialogHeader({ class
   </div>
 };
 
-interface BodyProps {
+export interface DialogBodyProps {
   className?: string
 }
 
-export const DialogBody: React.FC<BodyProps> = function DialogBody({ className, children }) {
+export const DialogBody: React.FC<DialogBodyProps> = function DialogBody({ className, children }) {
   return <div className={`dialog-body ${className ?? ''}`.trim()}>
     {children}
   </div>

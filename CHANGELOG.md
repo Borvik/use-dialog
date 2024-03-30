@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [1.1.4] - 2024-03-30
+### Updated
+- Updated peer dependencies
+
 ## [1.1.3] - 2022-05-21
 ### Fixed
 - Dependabot alerts
