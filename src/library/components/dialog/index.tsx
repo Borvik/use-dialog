@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useEffect, useMemo, useContext } from 'react';
+import React, { useState, useCallback, useRef, useEffect, useMemo, useContext, PropsWithChildren } from 'react';
 import ReactDOM from 'react-dom';
 import { DialogProvider, DialogContext } from './provider';
 import { firstFocusable } from '../../utils/firstFocusable';
@@ -20,11 +20,12 @@ export interface DialogProps {
  * Need options:
  * Click-outside to close: boolean
  */
-export const Dialog: React.FC<DialogProps> = function Dialog({ doNotUseHTML5Dialog, className, style, onSubmit, children, dialogRef }) {
+export const Dialog: React.FC<PropsWithChildren<DialogProps>> = function Dialog({ doNotUseHTML5Dialog, className, style, onSubmit, children, dialogRef }) {
   const [submitting, setSubmitting] = useState(false);
   const { close, dialog: dialogEl } = useContext(DialogContext);
   
   const dialogClose = useCallback((e: Event) => {
+    debugger;
     if (!dialogEl?.current?.returnValue) {
       close();
       return;
@@ -40,6 +41,7 @@ export const Dialog: React.FC<DialogProps> = function Dialog({ doNotUseHTML5Dial
   }, [ close, dialogEl ]);
 
   const backdropClick = useCallback((e: MouseEvent) => {
+    debugger;
     if (!dialogEl?.current) return;
     const {top, bottom, left, right} = dialogEl.current.getBoundingClientRect();
     const { clientX, clientY } = e;
@@ -50,6 +52,7 @@ export const Dialog: React.FC<DialogProps> = function Dialog({ doNotUseHTML5Dial
   }, [ dialogEl ]);
 
   const dialogCreated = (el: DialogElement | null) => {
+    debugger;
     if (!el || (el as HTMLDialogElement).open || !dialogEl) return;
     
     try {
@@ -130,7 +133,7 @@ export interface DialogHeaderProps {
   className?: string
 }
 
-export const DialogHeader: React.FC<DialogHeaderProps> = function DialogHeader({ className, showClose = true, children }) {
+export const DialogHeader: React.FC<PropsWithChildren<DialogHeaderProps>> = function DialogHeader({ className, showClose = true, children }) {
   const { dialog: dialogEl } = useContext(DialogContext);
   return <div className={`dialog-header ${className ?? ''}`.trim()}>
     <div>
@@ -148,7 +151,7 @@ export interface DialogBodyProps {
   className?: string
 }
 
-export const DialogBody: React.FC<DialogBodyProps> = function DialogBody({ className, children }) {
+export const DialogBody: React.FC<PropsWithChildren<DialogBodyProps>> = function DialogBody({ className, children }) {
   return <div className={`dialog-body ${className ?? ''}`.trim()}>
     {children}
   </div>
@@ -158,7 +161,7 @@ interface FooterProps {
   className?: string
 }
 
-export const DialogFooter: React.FC<FooterProps> = function DialogFooter({ className, children }) {
+export const DialogFooter: React.FC<PropsWithChildren<FooterProps>> = function DialogFooter({ className, children }) {
   return <div className={`dialog-footer ${className ?? ''}`.trim()}>
     {children}
   </div>
@@ -172,6 +175,7 @@ export function useDialog<T = any>(dialog: React.ReactNode) {
   const dialogEl = useRef<HTMLDialogElement | null>(null);
 
   const closeDialog = useCallback((result?: any) => {
+    debugger;
     if (refPromise.current) {
       refPromise.current(result);
     } else {
@@ -194,6 +198,7 @@ export function useDialog<T = any>(dialog: React.ReactNode) {
         return result;
       }
       catch (e) {
+        debugger;
         refPromise.current = null;
       }
     }
