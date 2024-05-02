@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useEffect, useMemo, useContext } from 'react';
+import React, { useState, useCallback, useRef, useEffect, useMemo, useContext, PropsWithChildren } from 'react';
 import ReactDOM from 'react-dom';
 import { DialogProvider, DialogContext } from './provider';
 import { firstFocusable } from '../../utils/firstFocusable';
@@ -20,9 +20,10 @@ export interface DialogProps {
  * Need options:
  * Click-outside to close: boolean
  */
-export const Dialog: React.FC<DialogProps> = function Dialog({ doNotUseHTML5Dialog, className, style, onSubmit, children, dialogRef }) {
+export const Dialog: React.FC<PropsWithChildren<DialogProps>> = function Dialog({ doNotUseHTML5Dialog, className, style, onSubmit, children, dialogRef }) {
   const [submitting, setSubmitting] = useState(false);
   const { close, dialog: dialogEl } = useContext(DialogContext);
+  const [_, setRerender] = useState(false);
   
   const dialogClose = useCallback((e: Event) => {
     if (!dialogEl?.current?.returnValue) {
@@ -50,7 +51,10 @@ export const Dialog: React.FC<DialogProps> = function Dialog({ doNotUseHTML5Dial
   }, [ dialogEl ]);
 
   const dialogCreated = (el: DialogElement | null) => {
-    if (!el || (el as HTMLDialogElement).open || !dialogEl) return;
+    if (!el || (el as HTMLDialogElement).open || !dialogEl) {
+      setRerender(p => !p);
+      return;
+    }
     
     try {
       const dialogPolyfill = require('@borvik/dialog-polyfill').default;
@@ -60,17 +64,25 @@ export const Dialog: React.FC<DialogProps> = function Dialog({ doNotUseHTML5Dial
       console.error(err);
     }
 
-    dialogEl.current?.removeEventListener('close', dialogClose);
-    dialogEl.current?.removeEventListener('click', backdropClick);
     dialogEl.current = el as HTMLDialogElement;
     if (dialogRef) {
       dialogRef.current = el as HTMLDialogElement;
     }
-    dialogEl.current.addEventListener('close', dialogClose);
-    dialogEl.current.addEventListener('click', backdropClick);
-    dialogEl.current.showModal();
+    setRerender(p => !p);
+  };
+  useEffect(() => {
+    if (!dialogEl?.current) {
+      return;
+    }
+    
+    const dlg = dialogEl?.current;
+    dlg.addEventListener('close', dialogClose);
+    dlg.addEventListener('click', backdropClick);
+    if (!dlg.open) {
+      dlg.showModal();
+    }
 
-    let dialogBody = dialogEl.current.querySelector('.dialog-body');
+    let dialogBody = dlg.querySelector('.dialog-body');
     if (dialogBody) {
       let focusable = firstFocusable(dialogBody);
       if (focusable) {
@@ -80,13 +92,11 @@ export const Dialog: React.FC<DialogProps> = function Dialog({ doNotUseHTML5Dial
     // dialogEl.current.show();
 
     // Notes: show() - Backdrop Click doesn't work (obviously), but neither does Esc which _is_ weird
-  };
-  useEffect(() => {
     return () => {
-      dialogEl?.current?.removeEventListener('close', dialogClose);
-      dialogEl?.current?.removeEventListener('click', backdropClick);
+      dlg.removeEventListener('close', dialogClose);
+      dlg.removeEventListener('click', backdropClick);
     };
-  }, [dialogClose, backdropClick, dialogEl]);
+  }, [dialogClose, backdropClick, dialogEl?.current]);
 
   if (!modalRoot)
     return null;
@@ -130,7 +140,7 @@ export interface DialogHeaderProps {
   className?: string
 }
 
-export const DialogHeader: React.FC<DialogHeaderProps> = function DialogHeader({ className, showClose = true, children }) {
+export const DialogHeader: React.FC<PropsWithChildren<DialogHeaderProps>> = function DialogHeader({ className, showClose = true, children }) {
   const { dialog: dialogEl } = useContext(DialogContext);
   return <div className={`dialog-header ${className ?? ''}`.trim()}>
     <div>
@@ -148,7 +158,7 @@ export interface DialogBodyProps {
   className?: string
 }
 
-export const DialogBody: React.FC<DialogBodyProps> = function DialogBody({ className, children }) {
+export const DialogBody: React.FC<PropsWithChildren<DialogBodyProps>> = function DialogBody({ className, children }) {
   return <div className={`dialog-body ${className ?? ''}`.trim()}>
     {children}
   </div>
@@ -158,7 +168,7 @@ interface FooterProps {
   className?: string
 }
 
-export const DialogFooter: React.FC<FooterProps> = function DialogFooter({ className, children }) {
+export const DialogFooter: React.FC<PropsWithChildren<FooterProps>> = function DialogFooter({ className, children }) {
   return <div className={`dialog-footer ${className ?? ''}`.trim()}>
     {children}
   </div>

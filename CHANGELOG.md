@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [1.1.5] - 2024-05-02
+### Updated
+- Updated types and support for React 18
+
 ## [1.1.4] - 2024-03-30
 ### Updated
 - Updated peer dependencies
