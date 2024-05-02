@@ -23,9 +23,9 @@ export interface DialogProps {
 export const Dialog: React.FC<PropsWithChildren<DialogProps>> = function Dialog({ doNotUseHTML5Dialog, className, style, onSubmit, children, dialogRef }) {
   const [submitting, setSubmitting] = useState(false);
   const { close, dialog: dialogEl } = useContext(DialogContext);
+  const [_, setRerender] = useState(false);
   
   const dialogClose = useCallback((e: Event) => {
-    debugger;
     if (!dialogEl?.current?.returnValue) {
       close();
       return;
@@ -41,7 +41,6 @@ export const Dialog: React.FC<PropsWithChildren<DialogProps>> = function Dialog(
   }, [ close, dialogEl ]);
 
   const backdropClick = useCallback((e: MouseEvent) => {
-    debugger;
     if (!dialogEl?.current) return;
     const {top, bottom, left, right} = dialogEl.current.getBoundingClientRect();
     const { clientX, clientY } = e;
@@ -52,8 +51,10 @@ export const Dialog: React.FC<PropsWithChildren<DialogProps>> = function Dialog(
   }, [ dialogEl ]);
 
   const dialogCreated = (el: DialogElement | null) => {
-    debugger;
-    if (!el || (el as HTMLDialogElement).open || !dialogEl) return;
+    if (!el || (el as HTMLDialogElement).open || !dialogEl) {
+      setRerender(p => !p);
+      return;
+    }
     
     try {
       const dialogPolyfill = require('@borvik/dialog-polyfill').default;
@@ -63,17 +64,25 @@ export const Dialog: React.FC<PropsWithChildren<DialogProps>> = function Dialog(
       console.error(err);
     }
 
-    dialogEl.current?.removeEventListener('close', dialogClose);
-    dialogEl.current?.removeEventListener('click', backdropClick);
     dialogEl.current = el as HTMLDialogElement;
     if (dialogRef) {
       dialogRef.current = el as HTMLDialogElement;
     }
-    dialogEl.current.addEventListener('close', dialogClose);
-    dialogEl.current.addEventListener('click', backdropClick);
-    dialogEl.current.showModal();
+    setRerender(p => !p);
+  };
+  useEffect(() => {
+    if (!dialogEl?.current) {
+      return;
+    }
+    
+    const dlg = dialogEl?.current;
+    dlg.addEventListener('close', dialogClose);
+    dlg.addEventListener('click', backdropClick);
+    if (!dlg.open) {
+      dlg.showModal();
+    }
 
-    let dialogBody = dialogEl.current.querySelector('.dialog-body');
+    let dialogBody = dlg.querySelector('.dialog-body');
     if (dialogBody) {
       let focusable = firstFocusable(dialogBody);
       if (focusable) {
@@ -83,13 +92,11 @@ export const Dialog: React.FC<PropsWithChildren<DialogProps>> = function Dialog(
     // dialogEl.current.show();
 
     // Notes: show() - Backdrop Click doesn't work (obviously), but neither does Esc which _is_ weird
-  };
-  useEffect(() => {
     return () => {
-      dialogEl?.current?.removeEventListener('close', dialogClose);
-      dialogEl?.current?.removeEventListener('click', backdropClick);
+      dlg.removeEventListener('close', dialogClose);
+      dlg.removeEventListener('click', backdropClick);
     };
-  }, [dialogClose, backdropClick, dialogEl]);
+  }, [dialogClose, backdropClick, dialogEl?.current]);
 
   if (!modalRoot)
     return null;
@@ -175,7 +182,6 @@ export function useDialog<T = any>(dialog: React.ReactNode) {
   const dialogEl = useRef<HTMLDialogElement | null>(null);
 
   const closeDialog = useCallback((result?: any) => {
-    debugger;
     if (refPromise.current) {
       refPromise.current(result);
     } else {
@@ -198,7 +204,6 @@ export function useDialog<T = any>(dialog: React.ReactNode) {
         return result;
       }
       catch (e) {
-        debugger;
         refPromise.current = null;
       }
     }

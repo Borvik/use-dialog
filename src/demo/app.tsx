@@ -27,7 +27,6 @@ function App() {
       <div>
         {dialog}
         <button type='button' onClick={async() => {
-          debugger;
           // Could do a "setState" here so <EditDialog data> actually has data.
           let result = await showDialog();
           // Result should be `undefined` if dialog was canceled
