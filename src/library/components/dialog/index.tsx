@@ -112,7 +112,6 @@ export const Dialog: React.FC<PropsWithChildren<DialogProps>> = function Dialog(
         e.preventDefault();
         e.stopPropagation();
         setSubmitting(true);
-        let errored = false;
         onSubmit((result?: any) => {
           if (result !== null && typeof result !== 'undefined') {
             dialogEl?.current!.close(JSON.stringify(result));
@@ -120,10 +119,9 @@ export const Dialog: React.FC<PropsWithChildren<DialogProps>> = function Dialog(
           }
           dialogEl?.current!.close();
         })
-        .catch(() => { errored = true }) // empty catch to catch form errors
+        .catch(() => { }) // empty catch to catch form errors
         .finally(() => {
-          if (errored)
-            setSubmitting(false);
+          setSubmitting(false);
         }); // setSubmitting...
       }}>
         {children}

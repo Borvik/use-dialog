@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [1.1.6] - 2024-07-18
+### Updated
+- Fixed issue which allowed submitting to stay `true` even once completed.
+
 ## [1.1.5] - 2024-05-02
 ### Updated
 - Updated types and support for React 18
