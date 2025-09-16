@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [1.1.7] - 2025-09-16
+### Updated
+- Fixed an issue with dialog style `relative` and scroll positions by switching it to `fixed` - thanks @wymillerlinux.
+
 ## [1.1.6] - 2024-07-18
 ### Updated
 - Fixed issue which allowed submitting to stay `true` even once completed.
